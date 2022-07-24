@@ -1,4 +1,4 @@
-
+import sys
 
 class Burrows:
     def __init__(self,t):
@@ -50,14 +50,19 @@ class Burrows:
         self.bwt_str = bwt_str
         return bwt_str
 
-    def find_next_alphabet(self,matrix,req_alphabet,count,j):
+    def find_next_alphabet(self,matrix,req_alphabet,required_count,j):
+        '''
+        This is used to find the alphabet from the 2nd column by using the alphabet last fetched.
+        Searches the 1st column, finds the appropriate alphabet in 2nd column and returns it along with the count of it in 2nd column.
+        '''
         current_count = 1
         req_count = 1
         index = 0
         # print(req_alphabet,'search')
+
         for i in range(0,j):
             if matrix[i][0] == req_alphabet:
-                if current_count == count:
+                if current_count == required_count:
                     req_alphabet = matrix[i][1]
                     index = i
                     # print(req_alphabet,'found at index',index)
@@ -73,17 +78,28 @@ class Burrows:
         return req_alphabet, req_count
 
     def inverse_bwt(self):
+        '''
+        result: List for storing the inverse of the BWT string provided.
+        matrix: 2D List for storing the 2 columns required for creating the inverse BWT.
+        '''
         result = ['$']
         matrix = []
+
+        # fetching the bwt string generated. Creating list from the string and sorting it
+        # lexicographically for creating the 2 columns required for inverse bwt.
         bwt_str = self.bwt_str
         sort_bwt_str_list = list(bwt_str)
         sort_bwt_str_list.sort()
         bwt_str_list = list(bwt_str)
+
+        # Creating the 2 columns in the form of 2D list.
         for i in range(0,len(bwt_str_list)):
             matrix.append([sort_bwt_str_list[i],bwt_str_list[i]])
         # print(matrix)
 
         count = 1 # stores index of occurance of the alphabet in the second column.
+
+        # keep iterating till the whole string is formed.
         while len(result) < len(matrix):
             for i in range(0,len(matrix)):
             # For first element after $.
@@ -91,21 +107,24 @@ class Burrows:
                     req_alphabet = matrix[i][1]
                     result.insert(0,req_alphabet)
                     # print("1 ->",req_alphabet,count)
-                else: 
+                else:
+                    # For all the elements after fetching the first.
                     # print('Here',req_alphabet)
                     if matrix[i][0] == req_alphabet:
                         req_alphabet, count = Burrows.find_next_alphabet(self,matrix,req_alphabet,count,len(matrix))
                         # print("2 ->",req_alphabet,count)
                         result.insert(0,req_alphabet)
+        
+        # discarding the $ from the first position(if present)
         if result[0] == '$':
             result = result[1:]
-        print(result)
 
+        print(''.join(result))
+        return ''.join(result)
 
 if __name__ == '__main__':
-    b = Burrows('jannabanana')
+    genome = sys.argv[1]
+    b = Burrows(genome)
     bwt_str = b.bwt()
     print(bwt_str)
     b.inverse_bwt()
-
-
