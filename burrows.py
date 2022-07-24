@@ -50,9 +50,62 @@ class Burrows:
         self.bwt_str = bwt_str
         return bwt_str
 
+    def find_next_alphabet(self,matrix,req_alphabet,count,j):
+        current_count = 1
+        req_count = 1
+        index = 0
+        # print(req_alphabet,'search')
+        for i in range(0,j):
+            if matrix[i][0] == req_alphabet:
+                if current_count == count:
+                    req_alphabet = matrix[i][1]
+                    index = i
+                    # print(req_alphabet,'found at index',index)
+                    break
+                else:
+                    current_count += 1
+
+        for i in range(0,index):
+            # print('searching',req_alphabet)
+            if matrix[i][1] == req_alphabet:
+                req_count += 1
+        # print(req_alphabet,'search ends',req_count)
+        return req_alphabet, req_count
+
+    def inverse_bwt(self):
+        result = ['$']
+        matrix = []
+        bwt_str = self.bwt_str
+        sort_bwt_str_list = list(bwt_str)
+        sort_bwt_str_list.sort()
+        bwt_str_list = list(bwt_str)
+        for i in range(0,len(bwt_str_list)):
+            matrix.append([sort_bwt_str_list[i],bwt_str_list[i]])
+        # print(matrix)
+
+        count = 1 # stores index of occurance of the alphabet in the second column.
+        while len(result) < len(matrix):
+            for i in range(0,len(matrix)):
+            # For first element after $.
+                if matrix[i][0] == '$' and result == ['$']:
+                    req_alphabet = matrix[i][1]
+                    result.insert(0,req_alphabet)
+                    # print("1 ->",req_alphabet,count)
+                else: 
+                    # print('Here',req_alphabet)
+                    if matrix[i][0] == req_alphabet:
+                        req_alphabet, count = Burrows.find_next_alphabet(self,matrix,req_alphabet,count,len(matrix))
+                        # print("2 ->",req_alphabet,count)
+                        result.insert(0,req_alphabet)
+        if result[0] == '$':
+            result = result[1:]
+        print(result)
+
+
 if __name__ == '__main__':
-    b = Burrows('abracadabra')
+    b = Burrows('jannabanana')
     bwt_str = b.bwt()
     print(bwt_str)
+    b.inverse_bwt()
 
 
