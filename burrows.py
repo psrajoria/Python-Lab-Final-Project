@@ -4,15 +4,16 @@ class Burrows:
     def __init__(self,t):
         '''
         t: input string
-        index_dict: Dictionary holding indexes of the strings generated while performing cyclic rotations.
+        index_list: List holding indexes of the strings generated while performing cyclic rotations.
                     This will be usefull while working on substring.
-                    {
-                        'AWJIUFHA$': 0
-                    },
-                    ...
+                    [
+                        ['A',1],
+                        ['B',2],
+                        ...
+                    ]
         '''
         self.template_string = str(t) + '$'
-        self.index_dict = {}
+        self.index_dict = []
 
     def generate_cyclic_rotations(self):
         '''
@@ -27,14 +28,15 @@ class Burrows:
         for i in range(len(temp_str_list)-1,-1,-1):
             temp_str_list.insert(0,temp_str_list.pop())
             temp_str = ''.join(temp_str_list)
-            # print(temp_str,i)
             result.append(temp_str)
-            self.index_dict[temp_str] = i
+            self.index_dict.append([temp_str[-1],i])
         self.rotations = result
+        # print(self.index_dict)
+        self.index_dict.sort()
+        # print(self.index_dict)
 
     def lexi_sorting(self):
         self.rotations.sort()
-        # print(self.rotations)
         # print(self.index_dict)
         # print(self.index_dict[self.rotations[6]])
 
@@ -95,7 +97,7 @@ class Burrows:
         # Creating the 2 columns in the form of 2D list.
         for i in range(0,len(bwt_str_list)):
             matrix.append([sort_bwt_str_list[i],bwt_str_list[i]])
-        # print(matrix)
+        print(matrix)
 
         count = 1 # stores index of occurance of the alphabet in the second column.
 
@@ -122,9 +124,16 @@ class Burrows:
         print(''.join(result))
         return ''.join(result)
 
+    def search_substring(self,substr):
+        substr_len = len(substr)
+        for i in range(0,len(self.template_string)-substr_len): 
+            if self.template_string[i:i+substr_len] == substr:
+                print(i)
+
 if __name__ == '__main__':
     genome = sys.argv[1]
     b = Burrows(genome)
     bwt_str = b.bwt()
     print(bwt_str)
     b.inverse_bwt()
+    b.search_substring('ANA')
