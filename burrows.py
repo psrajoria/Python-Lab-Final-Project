@@ -44,8 +44,8 @@ class Burrows:
         '''
         Performing all operations required for finding bwt.
         '''
-        b.generate_cyclic_rotations()
-        b.lexi_sorting()
+        Burrows.generate_cyclic_rotations(self)
+        Burrows.lexi_sorting(self)
         bwt_str = ''
         for i in range(0,len(self.rotations)):
             bwt_str = bwt_str + self.rotations[i][-1]
