@@ -44,8 +44,8 @@ class Burrows:
         '''
         Performing all operations required for finding bwt.
         '''
-        b.generate_cyclic_rotations()
-        b.lexi_sorting()
+        Burrows.generate_cyclic_rotations(self)
+        Burrows.lexi_sorting(self)
         bwt_str = ''
         for i in range(0,len(self.rotations)):
             bwt_str = bwt_str + self.rotations[i][-1]
@@ -125,10 +125,12 @@ class Burrows:
         return ''.join(result)
 
     def search_substring(self,substr):
+        result = []
         substr_len = len(substr)
         for i in range(0,len(self.template_string)-substr_len): 
             if self.template_string[i:i+substr_len] == substr:
-                print(i)
+                result.append(i)
+        return result
 
 if __name__ == '__main__':
     genome = sys.argv[1]
