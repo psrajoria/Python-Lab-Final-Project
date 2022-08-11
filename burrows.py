@@ -31,12 +31,19 @@ class Burrows:
             result.append(temp_str)
             self.index_dict.append([temp_str[-1],i])
         self.rotations = result
+        # print('\n\n\t\tT =',self.template_string,'\n')
+        # for i in range(0,len(self.rotations)):
+            # print('\t\t',self.rotations[i],i)
         # print(self.index_dict)
         self.index_dict.sort()
         # print(self.index_dict)
 
     def lexi_sorting(self):
         self.rotations.sort()
+        # print('\n\n\n')
+        # for i in range(0,len(self.rotations)):
+        #     print('\t\t',self.rotations[i])
+        # print('\n\n\n')
         # print(self.index_dict)
         # print(self.index_dict[self.rotations[6]])
 
@@ -54,8 +61,10 @@ class Burrows:
 
     def find_next_alphabet(self,matrix,req_alphabet,required_count,j):
         '''
-        This is used to find the alphabet from the 2nd column by using the alphabet last fetched.
-        Searches the 1st column, finds the appropriate alphabet in 2nd column and returns it along with the count of it in 2nd column.
+        This is used to find the alphabet from the 2nd column by using the 
+        alphabet last fetched.
+        Searches the 1st column, finds the appropriate alphabet in 2nd column and 
+        returns it along with the count of it in 2nd column.
         '''
         current_count = 1
         req_count = 1
@@ -97,7 +106,7 @@ class Burrows:
         # Creating the 2 columns in the form of 2D list.
         for i in range(0,len(bwt_str_list)):
             matrix.append([sort_bwt_str_list[i],bwt_str_list[i]])
-        print(matrix)
+        # print(matrix)
 
         count = 1 # stores index of occurance of the alphabet in the second column.
 
@@ -108,34 +117,41 @@ class Burrows:
                 if matrix[i][0] == '$' and result == ['$']:
                     req_alphabet = matrix[i][1]
                     result.insert(0,req_alphabet)
-                    # print("1 ->",req_alphabet,count)
                 else:
                     # For all the elements after fetching the first.
-                    # print('Here',req_alphabet)
                     if matrix[i][0] == req_alphabet:
-                        req_alphabet, count = Burrows.find_next_alphabet(self,matrix,req_alphabet,count,len(matrix))
-                        # print("2 ->",req_alphabet,count)
+                        req_alphabet, count = Burrows.find_next_alphabet(
+                                                        self,
+                                                        matrix,
+                                                        req_alphabet,
+                                                        count,
+                                                        len(matrix)
+                                                    )
                         result.insert(0,req_alphabet)
         
         # discarding the $ from the first position(if present)
         if result[0] == '$':
             result = result[1:]
 
-        print(''.join(result))
+        # print(''.join(result))
         return ''.join(result)
 
     def search_substring(self,substr):
         result = []
         substr_len = len(substr)
-        for i in range(0,len(self.template_string)-substr_len): 
-            if self.template_string[i:i+substr_len] == substr:
-                result.append(i)
-        return result
+        if len(substr) > len(self.template_string):
+            return -1
+        else:
+            for i in range(0,len(self.template_string)-substr_len): 
+                if self.template_string[i:i+substr_len] == substr:
+                    result.append(i)
+            return result
 
 if __name__ == '__main__':
     genome = sys.argv[1]
     b = Burrows(genome)
     bwt_str = b.bwt()
-    print(bwt_str)
+    # print('\n\n\n\t',bwt_str,'\n\n\n')
     b.inverse_bwt()
-    b.search_substring('ANA')
+    index = b.search_substring('TTA')
+    # print(index)
